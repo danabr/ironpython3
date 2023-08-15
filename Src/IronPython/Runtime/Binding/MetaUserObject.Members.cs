@@ -104,7 +104,7 @@ namespace IronPython.Runtime.Binding {
                 foundSlot = FindSlot(context, name, sdo, out systemTypeResolution, out extensionMethodResolution);
                 _extensionMethodRestriction = extensionMethodResolution;
 
-                if (sdo.PythonType.HasDictionary && (foundSlot == null || !foundSlot.IsSetDescriptor(context, sdo.PythonType))) {
+                if (sdo.PythonType.HasDictionary) {
                     MakeDictionaryAccess();
                 }
 
@@ -579,7 +579,6 @@ namespace IronPython.Runtime.Binding {
             protected override FastGetBase FinishRule() {
                 GetMemberDelegates func;
                 if (_slot is ReflectedSlotProperty rsp) {
-                    Debug.Assert(!_dictAccess); // properties for __slots__ are get/set descriptors so we should never access the dictionary.
                     func = new GetMemberDelegates(OptimizedGetKind.PropertySlot, Value.PythonType, _binder, _binder.Name, _version, _slot, _getattrSlot, rsp.Getter, FallbackError(), _context.ModuleContext.ExtensionMethods);
                 } else if (_dictAccess) {
                     if (_slot is PythonTypeUserDescriptorSlot) {
